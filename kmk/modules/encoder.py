@@ -4,6 +4,7 @@ import busio
 import digitalio
 from supervisor import ticks_ms
 
+import keypad
 from kmk.modules import Module
 
 # NB : not using rotaryio as it requires the pins to be consecutive
@@ -210,6 +211,7 @@ class EncoderHandler(Module):
         self.encoders = []
         self.pins = None
         self.map = None
+        self.event_queue = []
 
     def on_runtime_enable(self, keyboard):
         return
@@ -227,7 +229,7 @@ class EncoderHandler(Module):
 
                     # Else fall back to GPIO
                     else:
-                        gpio_pins = pins[:3]
+                        gpio_pins = pins #[:3]
                         new_encoder = GPIOEncoder(*gpio_pins)
 
                     # In our case, we need to define keybord and encoder_id for callbacks
@@ -245,35 +247,37 @@ class EncoderHandler(Module):
         return
 
     def on_move_do(self, keyboard, encoder_id, state):
-        if self.map:
-            layer_id = keyboard.active_layers[0]
-            # if Left, key index 0 else key index 1
-            if state['direction'] == -1:
-                key_index = 0
-            else:
-                key_index = 1
-            key = self.map[layer_id][encoder_id][key_index]
-            keyboard.tap_key(key)
-
+        if state['direction'] == -1:
+            key_index = 0
+        else:
+            key_index = 1
+        coord = key = self.map[encoder_id][key_index] + keyboard.matrix.offset 
+        ev1 =  keypad.Event(coord, True)
+        ev2 =  keypad.Event(coord, False)
+        self.event_queue.extend([ev1,ev2])
     def on_button_do(self, keyboard, encoder_id, state):
-        if state['is_pressed'] is True:
-            layer_id = keyboard.active_layers[0]
-            key = self.map[layer_id][encoder_id][2]
-            keyboard.tap_key(key)
-
+        '''
+        new button event handler
+        inject key event into keymatrix
+        '''
+        coord = key = self.map[encoder_id][2] + keyboard.matrix.offset 
+        ev =  keypad.Event(coord, state['is_pressed'])
+        self.event_queue.append(ev)
     def before_matrix_scan(self, keyboard):
         '''
-        Return value will be injected as an extra matrix update
+        encoder events will be injected as an extra matrix update
         '''
         for encoder in self.encoders:
             encoder.update_state()
-
-        return keyboard
 
     def after_matrix_scan(self, keyboard):
         '''
         Return value will be replace matrix update if supplied
         '''
+        if keyboard.matrix_update:
+            self.event_queue.append(keyboard.matrix_update)
+        if self.event_queue:
+            keyboard.matrix_update = self.event_queue.pop(0)
         return
 
     def before_hid_send(self, keyboard):
