@@ -118,6 +118,8 @@ class KMKKeyboard:
 
     def _find_key_in_map(self, int_coord):
         try:
+            if self.debug_enabled:
+                print(f'debug(ic={int_coord}, coord_mapping={self.coord_mapping},layers={self.active_layers})')
             idx = self.coord_mapping.index(int_coord)
         except ValueError:
             if self.debug_enabled:
