@@ -38,6 +38,7 @@ class Split(Module):
         uart_flip=True,
         use_pio=False,
         debug_enabled=False,
+        split_offset=None,
     ):
         self._is_target = True
         self._uart_buffer = []
@@ -45,7 +46,7 @@ class Split(Module):
         self.split_side = split_side
         self.split_type = split_type
         self.split_target_left = split_target_left
-        self.split_offset = None
+        self.split_offset = split_offset
         self.data_pin = data_pin
         self.data_pin2 = data_pin2
         self.target_left = target_left
@@ -134,6 +135,10 @@ class Split(Module):
                         tx=self.data_pin, rx=self.data_pin2, timeout=self._uart_interval
                     )
 
+        if self._debug_enabled:
+            print(f'in split.py, offset={self.split_offset}col_pins={keyboard.col_pins},row_pins={keyboard.row_pins}')
+            print(f'coord_mapping={keyboard.coord_mapping}')
+
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
             keyboard.coord_mapping = []
@@ -158,6 +163,9 @@ class Split(Module):
 
         if self.split_side == SplitSide.RIGHT:
             keyboard.matrix.offset = self.split_offset
+            keyboard.coord_mapping = list(range(len(keyboard.matrix.coord_mapping)+self.split_offset))
+            if self._debug_enabled:
+                print(f'will set offset {self.split_offset} to matrix, keyboard.coord_mapping={keyboard.coord_mapping}')
 
     def before_matrix_scan(self, keyboard):
         if self.split_type == SplitType.BLE:

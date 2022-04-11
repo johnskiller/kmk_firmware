@@ -1,10 +1,11 @@
 print("Starting")
 
 import board
+import kb
 
-from kmk.kmk_keyboard import KMKKeyboard
+
 from kmk.keys import KC
-from kmk.scanners.native_keypad_scanner import keys_scanner
+from kmk.modules.split import Split, SplitSide, SplitType
 from kmk.modules.encoder import EncoderHandler
 
 #keyboard.col_pins = (board.GP0)    # try D5 on Feather, keeboar
@@ -13,20 +14,24 @@ from kmk.modules.encoder import EncoderHandler
 
 
 
-_KEY_CFG = [
-        [board.GP0,board.GP1,board.GP2,board.GP3]
-        ]
-
-class Keyboard2040(KMKKeyboard):
-    def __init__(self):
-        self.matrix = keys_scanner(_KEY_CFG)
-
-keyboard = Keyboard2040()
+keyboard = kb.KMKKeyboard()
+keyboard.debug_enabled=True
 keyboard.keymap = [
-    [KC.A,KC.B,KC.C,KC.D]
+    [KC.A,KC.S,KC.D,KC.F, KC.J,KC.K,KC.L,KC.SCOLON]
 ]
+
+print(f'cood_mapping={keyboard.coord_mapping}')
+# TODO Comment one of these on each side
+#split_side = SplitSide.LEFT
+split_side = SplitSide.RIGHT
+split = Split(split_type=SplitType.ONEWIRE,split_side=split_side,
+split_target_left=False,split_offset=5,
+debug_enabled=True,)
+
+split.data_pin=board.GP17
+
 encoder_handler = EncoderHandler()
-keyboard.modules = [encoder_handler]
+keyboard.modules = [encoder_handler,split]
 encoder_handler.pins = ((board.GP13,board.GP14,board.GP15),)
 # Rotary Encoder (1 encoder / 1 definition per layer)
 encoder_handler.map = ( ((KC.LEFT, KC.RIGHT, KC.Z),),) 
