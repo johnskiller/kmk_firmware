@@ -30,7 +30,6 @@ class NativeKeypadScanner(Scanner):
         ev = self.curr_event
         has_event = self.keypad.events.get_into(ev)
         if has_event:
-            print("offset=",self.offset)
             if self.offset:
                 return keypad.Event(ev.key_number + self.offset, ev.pressed)
             else:

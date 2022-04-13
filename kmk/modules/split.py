@@ -163,7 +163,6 @@ class Split(Module):
 
         if self.split_side == SplitSide.RIGHT:
             keyboard.matrix.offset = self.split_offset
-            keyboard.coord_mapping = list(range(len(keyboard.matrix.coord_mapping)+self.split_offset))
             if self._debug_enabled:
                 print(f'will set offset {self.split_offset} to matrix, keyboard.coord_mapping={keyboard.coord_mapping}')
 
