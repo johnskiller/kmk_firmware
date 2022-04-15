@@ -11,7 +11,7 @@ from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.tapdance import TapDance
 from kmk.modules.mouse_keys import MouseKeys
-from kmk.extensions.lcd import LCD
+#from kmk.extensions.lcd import LCD
 #keyboard.col_pins = (board.GP0)    # try D5 on Feather, keeboar
 #keyboard.row_pins = (board.GP1)    # try D6 on Feather, keeboar
 #keyboard.diode_orientation = DiodeOrientation.COL2ROW
@@ -87,8 +87,8 @@ keyboard.keymap = [
 print(f'cood_mapping={keyboard.coord_mapping}')
 # TODO Comment one of these on each side
 #split_side = SplitSide.LEFT
-split_side = SplitSide.RIGHT
-split = Split(split_side=split_side, split_target_left=False,split_offset=20,use_pio=True,
+#split_side = SplitSide.RIGHT
+split = Split(split_target_left=False,split_offset=20,use_pio=True,
 debug_enabled=True,)
 
 split.data_pin=board.GP16
