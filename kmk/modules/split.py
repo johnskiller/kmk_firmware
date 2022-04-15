@@ -127,17 +127,24 @@ class Split(Module):
                     self._uart = busio.UART(
                         tx=self.data_pin2, rx=self.data_pin, timeout=self._uart_interval
                     )
+                    print(f'use busio.UART, tx={self.data_pin2},rx={self.data_pin}')
+
             else:
                 if self._use_pio:
                     self._uart = self.PIO_UART(tx=self.data_pin, rx=self.data_pin2)
+                    print(f'use pio.UART, tx={self.data_pin},rx={self.data_pin2}')
                 else:
+                    print(f'before init UART, will use busio.UART, tx={self.data_pin},rx={self.data_pin2}')
                     self._uart = busio.UART(
                         tx=self.data_pin, rx=self.data_pin2, timeout=self._uart_interval
                     )
+                    print(f'use busio.UART, tx={self.data_pin},rx={self.data_pin2}')
 
         if self._debug_enabled:
             print(f'in split.py, offset={self.split_offset}col_pins={keyboard.col_pins},row_pins={keyboard.row_pins}')
             print(f'coord_mapping={keyboard.coord_mapping}')
+            print(f'self.._is_targat={self._is_target},split type:{self.split_type}')
+            print(self.__dict__)
 
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
