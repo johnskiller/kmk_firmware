@@ -32,7 +32,7 @@ class LCD(Extension):
 # Create a TileGrid to hold the bitmap
 #tile_grid = displayio.TileGrid(bitmap, pixel_shader=bitmap.pixel_shader)
 
-        bitmap, palette = adafruit_imageload.load("/purple.bmp",
+        bitmap, palette = adafruit_imageload.load("/L1.bmp",
                                           bitmap=displayio.Bitmap, palette=displayio.Palette)
         tile_grid = displayio.TileGrid(bitmap, pixel_shader=palette)
 # Create a Group to hold the TileGrid
@@ -55,4 +55,29 @@ class LCD(Extension):
         text_group.append(text_area)  # Subgroup for text
         splash.append(text_group)
 
+    def on_runtime_enable(self, sandbox):
+        return
 
+    def on_runtime_disable(self, sandbox):
+        return
+
+    def during_bootup(self, sandbox):
+        return
+
+    def before_matrix_scan(self, sandbox):
+        return
+
+    def after_matrix_scan(self, sandbox):
+        return
+
+    def before_hid_send(self, sandbox):
+        return
+
+    def after_hid_send(self, sandbox):
+        return
+
+    def on_powersave_enable(self, sandbox):
+        return
+
+    def on_powersave_disable(self, sandbox):
+        return
