@@ -1,18 +1,16 @@
 import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.scanners.native_keypad_scanner import keys_scanner
+from kmk.scanners.keypad import KeysScanner
 
-_KEY_CFG = [
-           [board.GP10, board.GP4, board.GP3,  board.GP0, board.GP1,  board.GP2,
+_KEY_CFG = [board.GP10, board.GP4, board.GP3,  board.GP0, board.GP1,  board.GP2,
             board.GP8,  board.GP5, board.GP28, board.GP7, board.GP6,  board.GP27,
             board.GP12, board.GP26,board.GP22, board.GP21,board.GP20, board.GP19,
                                                           board.GP15, board.GP18
             ]
-        ]
 
 class KMKKeyboard(_KMKKeyboard):
     def __init__(self):
-        self.matrix = keys_scanner(_KEY_CFG)
+        self.matrix = KeysScanner(_KEY_CFG)
 
         self.matrix.coord_mapping = [
              0, 1, 2, 3, 4, 5,     25,24,23,22,21,20,
