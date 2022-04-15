@@ -11,7 +11,7 @@ from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.tapdance import TapDance
 from kmk.modules.mouse_keys import MouseKeys
-#from kmk.extensions.lcd import LCD
+from kmk.extensions.lcd import LCD
 #keyboard.col_pins = (board.GP0)    # try D5 on Feather, keeboar
 #keyboard.row_pins = (board.GP1)    # try D6 on Feather, keeboar
 #keyboard.diode_orientation = DiodeOrientation.COL2ROW
@@ -26,7 +26,7 @@ keyboard = kb.KMKKeyboard()
 
 # enable lcd module
 # TODO add params for lcd pins
-#keyboard.extensions.append(LCD())
+keyboard.extensions.append(LCD())
 
 keyboard.debug_enabled=True
 keyboard.modules = [Layers(),ModTap(),TapDance(),MouseKeys()]
@@ -41,11 +41,12 @@ DIG=1 # Digits
 
 keyboard.keymap = [
     [  #Layer 0 QWERTY
-        KC.TAB, KC.Q,   KC.W,   KC.E,   KC.R,  KC.T,                         KC.Y,    KC.U,    KC.I,    KC.O,   KC.P,  KC.BSPC,\
-       ESC_LCTL,KC.A,  KC.LT(SYM,KC.S),   KC.LT(1,KC.D),KC.LT(FUN,KC.F),  KC.G,        KC.H,    KC.J,    KC.K,    KC.L, KC.SCLN, KC.QUOT,\
-        KC.LSFT,KC.Z,   KC.X,   KC.C,   KC.V,  KC.B,                         KC.N,    KC.M, KC.COMM,  KC.DOT, KC.SLSH, KC.RSFT,\
+        KC.TAB, KC.Q,   KC.W,   KC.E,   KC.R,  KC.T,                         KC.Y,    KC.U,    KC.I,    KC.O,   KC.P,  \
+       ESC_LCTL,KC.A,  KC.LT(SYM,KC.S),   KC.LT(1,KC.D),KC.LT(FUN,KC.F),  KC.G,        KC.H,    KC.J,    KC.K,    KC.L, KC.SCLN, \
+        KC.LSFT,KC.Z,   KC.X,   KC.C,   KC.V,  KC.B,                         KC.N,    KC.M, KC.COMM,  KC.DOT, KC.SLSH, \
                                      KC.TD(KC.LGUI,KC.TG(MK)),   ENT_LALT,                  KC.LT(NAV,KC.SPACE),   KC.BSPC,
     ],
+    '''
     [   #Layer 1 Digit
         KC.GRV ,_______,_______,_______,_______,_______,                         KC.PLUS,  KC.N7,    KC.N8,    KC.N9,   KC.EQL,  KC.BSPC,\
         _______,_______,_______,XXXXXXX,_______,_______,                         KC.MINUS, KC.N4,    KC.N5,    KC.N6,   KC.ASTR, KC.QUOT,\
@@ -82,6 +83,7 @@ keyboard.keymap = [
         _______,_______,_______,_______,_______,_______,                         _______,_______, _______, _______,_______,_______,\
                                             KC.LGUI,   KC.ENT,                  KC.SPACE,   KC.BSPC,
     ],
+    '''
 ]
 
 print(f'cood_mapping={keyboard.coord_mapping}')
