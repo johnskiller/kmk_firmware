@@ -5,8 +5,8 @@ from kmk.scanners.native_keypad_scanner import keys_scanner
 _KEY_CFG = [
            [board.GP10, board.GP4, board.GP3,  board.GP0, board.GP1,  board.GP2,
             board.GP8,  board.GP5, board.GP28, board.GP7, board.GP6,  board.GP27,
-            board.GP12, board.GP26,board.GP22, board.GP21, board.GP20,board.GP19,
-            board.GP18, board.GP15
+            board.GP12, board.GP26,board.GP22, board.GP21,board.GP20, board.GP19,
+                                                          board.GP15, board.GP18
             ]
         ]
 
