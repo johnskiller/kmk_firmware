@@ -24,7 +24,10 @@ def five_col_map():
                         18,19,     36,35,
         ]
 class KMKKeyboard(_KMKKeyboard):
-    def __init__(self):
+    def __init__(self,col=5):
+        if col == 5:
+            for x in [board.GP10,board.GP8,board.GP12]:
+                _KEY_CFG.remove(x)
         self.matrix = KeysScanner(_KEY_CFG)
 
-        self.coord_mapping = six_col_map()
+        self.coord_mapping = five_col_map()
