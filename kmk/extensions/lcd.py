@@ -17,14 +17,15 @@ class LCD(Extension):
     def __init__(self):
 
         displayio.release_displays()  # Release any resources
-        spi = busio.SPI(clock=GP10, MOSI=GP11)  # SPI0BUS PIN
+
+        self.spi = busio.SPI(clock=GP10, MOSI=GP11)  # SPI0BUS PIN
         #spi = busio.SPI(clock=GP2, MOSI=GP3)  # SPI0BUS PIN
-        display_bus = displayio.FourWire(
-            spi, command=GP8, chip_select=GP9, reset=GP12) # other PIN
+        self.display_bus = displayio.FourWire(
+            self.spi, command=GP8, chip_select=GP9, reset=GP12) # other PIN
             #spi, command=GP7, chip_select=GP5, reset=GP6) # other PIN
-        display = ST7735R(display_bus, width=132, height=162,rotation=180,invert=True)
-        splash = displayio.Group()  # Make the display context
-        display.show(splash)
+        self.display = ST7735R(self.display_bus, width=132, height=162,rotation=180,invert=True)
+        self.splash = displayio.Group()  # Make the display context
+        self.display.show(self.splash)
 # show bmp
 # Setup the file as the bitmap data source
 #bitmap = displayio.OnDiskBitmap("/purple.bmp")
@@ -32,7 +33,7 @@ class LCD(Extension):
 # Create a TileGrid to hold the bitmap
 #tile_grid = displayio.TileGrid(bitmap, pixel_shader=bitmap.pixel_shader)
 
-        bitmap, palette = adafruit_imageload.load("/L1.bmp",
+        bitmap, palette = adafruit_imageload.load("/lcd.bmp",
                                           bitmap=displayio.Bitmap, palette=displayio.Palette)
         tile_grid = displayio.TileGrid(bitmap, pixel_shader=palette)
 # Create a Group to hold the TileGrid
@@ -43,17 +44,20 @@ class LCD(Extension):
 
 # Add the Group to the Display
 #display.show(group)
-        splash.append(group)
+        self.splash.append(group)
 
 # Draw a label=text
-        text_group = displayio.Group(scale=2, x=20, y=10)
-        text = "Temp"
+        text_group = displayio.Group(scale=2, x=40, y=120)
+        text = "L0"
         font = bitmap_font.load_font("/LeagueSpartan-Bold-16.bdf")
         label.anchor_point = (0.0, 0.0)
         label.anchored_position = (0, 0)
-        text_area = label.Label(font, text=text, color=0xFF00FF)
+        text_area = label.Label(font, text=text, color=0xFFFFFF)
         text_group.append(text_area)  # Subgroup for text
-        splash.append(text_group)
+        self.splash.append(text_group)
+
+        self.textarea = text_area
+        self.layer=0
 
     def on_runtime_enable(self, sandbox):
         return
@@ -73,7 +77,12 @@ class LCD(Extension):
     def before_hid_send(self, sandbox):
         return
 
-    def after_hid_send(self, sandbox):
+    def after_hid_send(self, keyboard):
+        layer = keyboard.active_layers[0]
+        if self.layer != layer:
+            text = f'L{layer}'
+            self.textarea.text = text
+            self.layer = layer
         return
 
     def on_powersave_enable(self, sandbox):
