@@ -5,6 +5,8 @@ import kb
 
 
 from kmk.keys import KC
+from kmk.extensions.international import International
+
 from kmk.modules.split import Split, SplitSide, SplitType
 from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers
@@ -13,6 +15,7 @@ from kmk.modules.combos import Combos, Chord, Sequence
 from kmk.modules.tapdance import TapDance
 from kmk.modules.mouse_keys import MouseKeys
 #from kmk.extensions.lcd import LCD
+from midi_chord import MidiChord,MidiChords
 
 #LOWER = KC.MO(1)
 #RAISE = KC.MO(2)
@@ -20,18 +23,23 @@ from kmk.modules.mouse_keys import MouseKeys
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-keyboard = kb.KMKKeyboard()
+keyboard = kb.KMKKeyboard(col=6)
 
 # enable lcd module
 # TODO add params for lcd pins
 #keyboard.extensions.append(LCD())
+keyboard.extensions.append(International())
 
 keyboard.debug_enabled=True
-keyboard.modules = [Layers(),ModTap(),TapDance(),MouseKeys()]
+layers_mod = Layers()
+#layers_mod.tap_time=100
+keyboard.modules = [layers_mod,ModTap(),TapDance(),MouseKeys()]
+keyboard.modules.append(MidiChords())
 
 combos = Combos()
 keyboard.modules.append(combos)
 
+MIDI=8
 Di2=7 # second digit layer
 FUN=6 # Function Keys
 SYM=5 # Symbol Layer
@@ -46,9 +54,14 @@ ENT_LALT = KC.MT(KC.ENT, KC.LALT)
 SLSH_RSFT = KC.MT(KC.SLSH, KC.RSFT)
 #ESC_GRV=KC.TD(KC.ESC,KC.TILD,KC.GRV)
 NAV_SPC = KC.LT(NAV,KC.SPACE)
+MAJOR = KC.CHORD('Major',4,7)
+MINOR = KC.CHORD('Minor',3,7)
+DIM   = KC.CHORD('Dim',3,6)
+AUG   = KC.CHORD('Aug',4,8)
 
 combos.combos = [
-    Chord((KC.J, KC.K), KC.TG(MK))
+    Chord((KC.J, KC.K), KC.TG(MK)),
+    Chord((KC.Y, KC.U), KC.TG(MIDI))
 ]
 def filte_layer(layer):
     new_lay = layer
@@ -124,7 +137,13 @@ keymap = [
         _______,_______,_______,_______,_______,_______,                         _______,_______, _______, _______,_______,_______,\
                                             KC.LGUI,   KC.ENT,                  KC.SPACE,   KC.BSPC,
     ],
-    [   #Layer 8 Digit
+    [   #Layer 8 MIDI
+        _______,KC.MIDI_NOTE(61),KC.MIDI_NOTE(63),XXXXXXX,         KC.MIDI_NOTE(66),KC.MIDI_NOTE(68),  KC.MIDI_NOTE(70),XXXXXXX,          KC.MIDI_NOTE(73), KC.MIDI_NOTE(75),XXXXXXX,         _______,\
+        _______,KC.NOTE(60),KC.MIDI_NOTE(62),KC.MIDI_NOTE(64),KC.MIDI_NOTE(65),KC.MIDI_NOTE(67),  KC.MIDI_NOTE(69),KC.MIDI_NOTE(71), KC.MIDI_NOTE(72), KC.MIDI_NOTE(74),KC.MIDI_NOTE(76),_______,\
+        _______,KC.MIDI_VEL(-10),KC.MIDI_VEL(10),_______,_______,_______,                         MAJOR,MINOR, DIM, AUG,_______,_______,\
+                                            KC.LGUI,   KC.ENT,                  KC.SPACE,   KC.TG(MIDI),
+    ],
+    [   #Layer Blank
         _______,_______,_______,_______,_______,_______,                         _______,_______, _______, _______,_______,_______,\
         _______,_______,_______,_______,_______,_______,                         _______,_______, _______, _______,_______,_______,\
         _______,_______,_______,_______,_______,_______,                         _______,_______, _______, _______,_______,_______,\
@@ -136,7 +155,7 @@ keyboard.keymap = filte_all(keymap)
 
 print(f'cood_mapping={keyboard.coord_mapping}')
 # TODO Comment one of these on each side
-#split_side = SplitSide.LEFT
+split_side = SplitSide.LEFT
 #split_side = SplitSide.RIGHT
 split = Split(split_target_left=False,split_offset=20,use_pio=True,
 debug_enabled=True,)
@@ -145,9 +164,10 @@ split.data_pin=board.GP16
 split.data_pin2=board.GP17
 
 encoder_handler = EncoderHandler()
-encoder_handler.pins = ((board.GP13,board.GP14,None),)
+encoder_handler.pins = ((board.GP13,board.GP14,board.GP9,True),)
 # Rotary Encoder (1 encoder / 1 definition per layer)
-encoder_handler.map = ( ((KC.LEFT, KC.RIGHT),),) 
+encoder_handler.map = ( ((KC.LANG4, KC.LANG5,KC.LANG2),),) 
+#encoder_handler.map = ( ((KC.LEFT, KC.RIGHT,KC.LANG1),),) 
 keyboard.modules.append(encoder_handler)
 keyboard.modules.append(split)
 ##keyboard.encoders = [GPIOEncoder(board.GP13, board.GP14, onRotateA) ]

@@ -23,14 +23,34 @@ class midiNoteValidator:
         self.velocity = velocity
         self.channel = channel
 
+class MidiChord:
+    def __init__(self,name='unknow',semitons=[]):
+        self._semitones = semitons
+        self._name = name
+    
+    def __repr__(self) -> str:
+        return f'name{self._name}, semitons:{self._semitones}'
 
-class MIDI(MidiKeys):
+class chordValidator:
+    def __init__(self, name='unknow',*args):
+        self.args = args
+        self.name = name
+
+class MidiChords(MidiKeys):
     def __init__(self):
         super().__init__()
+        self._chords = {}
         make_argumented_key(
             names=('MIDI_VEL',),
             validator=velocityValidator,
             on_press=self.velocity_change,
+        )
+
+        make_argumented_key(
+            names=('CHORD',),
+            validator=chordValidator,
+            on_press=self.chord_press,
+            on_release=self.chord_release,
         )
         make_argumented_key(
             names=('MIDI_VELR',),
@@ -50,6 +70,15 @@ class MIDI(MidiKeys):
             # if debug_enabled:
             print('No midi device found.')
     
+    def chord_press(self,key,keyboards,*args,**kwargs):
+        print(f'###### key:{key},args:{args}, name:{key.meta.name},meta:{key.meta.args}')
+        self._chords[key.meta.name]=MidiChord(key.meta.name,list(key.meta.args))
+        print(f'chords:{self._chords}')
+
+    def chord_release(self,key,keyboards,*args,**kwargs):
+        self._chords.pop(key.meta.name,None)
+        print(f'chords:{self._chords}')
+
     def velocity_change(self,key, keyboard, *args, **kwargs):
         global default_velocity
         delta = key.meta.velocity
@@ -59,10 +88,14 @@ class MIDI(MidiKeys):
     
     def note_on(self, key, keyboard, *args, **kwargs):
         self.send(NoteOn(key.meta.note, default_velocity, channel=key.meta.channel))
-
+        for c in self._chords:
+            chord = self._chords[c]
+            for semitone in chord._semitones:
+                self.send(NoteOn(key.meta.note+semitone, default_velocity, channel=key.meta.channel))
     def after_matrix_scan(self, keyboard):
         if self.midi:
             message = self.midi.receive()
             if message:
-                print(f'====>>> midi message:{message}')
+                #print(f'====>>> midi message:{message}')
+                pass
         return None
