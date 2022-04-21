@@ -94,6 +94,7 @@ keymap = [
        TAB_LCTL,  KC.A,    KC.LT(SYM,KC.O),  KC.LT(DIG,KC.E),KC.LT(FUN,KC.U), KC.I,   KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.ENT, \
         KC.LSFT,  KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,                           KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.SLSH, \
                                         KC.LGUI, ENT_LALT,                          NAV_SPC, KC.BKDL,
+                                  KC.LANG2,KC.LEFT,KC.RIGHT,                        KC.N1,KC.N2,      
     ],
     [  #Layer 1 QWERTY
        KC.GESC, KC.Q,   KC.W,   KC.E,   KC.R,  KC.T,                                    KC.Y,    KC.U,    KC.I,    KC.O,   KC.P,  KC.BSPC,\
@@ -157,7 +158,7 @@ print(f'cood_mapping={keyboard.coord_mapping}')
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
 #split_side = SplitSide.RIGHT
-split = Split(split_target_left=False,split_offset=20,use_pio=True,
+split = Split(split_target_left=False,split_offset=23,use_pio=True,
 debug_enabled=True,)
 
 split.data_pin=board.GP16
@@ -166,7 +167,8 @@ split.data_pin2=board.GP17
 encoder_handler = EncoderHandler()
 encoder_handler.pins = ((board.GP13,board.GP14,board.GP9,True),)
 # Rotary Encoder (1 encoder / 1 definition per layer)
-encoder_handler.map = ( ((KC.LANG4, KC.LANG5,KC.LANG2),),) 
+encoder_handler.map = ( (21, 22,20),) 
+#encoder_handler.map = ( ((KC.LANG4, KC.LANG5,KC.LANG2),),) 
 #encoder_handler.map = ( ((KC.LEFT, KC.RIGHT,KC.LANG1),),) 
 keyboard.modules.append(encoder_handler)
 keyboard.modules.append(split)
