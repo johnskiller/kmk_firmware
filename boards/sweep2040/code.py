@@ -14,7 +14,7 @@ from kmk.modules.modtap import ModTap
 from kmk.modules.combos import Combos, Chord, Sequence
 from kmk.modules.tapdance import TapDance
 from kmk.modules.mouse_keys import MouseKeys
-#from kmk.extensions.lcd import LCD
+from kmk.extensions.lcd import LCD
 from midi_chord import MidiChord,MidiChords
 
 #LOWER = KC.MO(1)
@@ -23,11 +23,11 @@ from midi_chord import MidiChord,MidiChords
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-keyboard = kb.KMKKeyboard(col=6)
+keyboard = kb.KMKKeyboard(col=5)
 
 # enable lcd module
 # TODO add params for lcd pins
-#keyboard.extensions.append(LCD())
+keyboard.extensions.append(LCD())
 keyboard.extensions.append(International())
 
 keyboard.debug_enabled=True
