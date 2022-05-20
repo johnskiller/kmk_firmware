@@ -1,6 +1,7 @@
 import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.scanners.keypad import KeysScanner
+from kmk.scanners.encoder import RotaryioEncoder
 
 _KEY_CFG = [board.GP10, board.GP4, board.GP3,  board.GP0, board.GP1,  board.GP2,
             board.GP8,  board.GP5, board.GP28, board.GP7, board.GP6,  board.GP27,
@@ -29,6 +30,8 @@ class KMKKeyboard(_KMKKeyboard):
         if col == 5:
             for x in [board.GP10,board.GP8,board.GP12]:
                 _KEY_CFG.remove(x)
-        self.matrix = KeysScanner(_KEY_CFG)
+        else:
+            _KEY_CFG.append(board.GP9)  # add encoder button to matrix
+        self.matrix = [KeysScanner(_KEY_CFG), RotaryioEncoder(board.GP13,board.GP14)]
 
         self.coord_mapping = five_col_map()
